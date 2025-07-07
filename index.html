@@ -1,14 +1,131 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calcule Moyenne</title>
-    <script type="module" crossorigin src="/assets/index-BpwwmD-4.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-DN6VEZwU.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculateur de Moyenne S3/S4</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4; }
+        .navbar { background: #333; color: #fff; padding: 1em; display: flex; }
+        .navbar button { background: none; border: none; color: #fff; margin-right: 1em; font-size: 1.1em; cursor: pointer; }
+        .navbar button.active { border-bottom: 2px solid #fff; }
+        .container { max-width: 600px; margin: 2em auto; background: #fff; padding: 2em; border-radius: 8px; }
+        h2 { margin-top: 0; }
+        .matiere { display: flex; align-items: center; margin-bottom: 1em; }
+        .matiere label { flex: 1; }
+        .matiere input { width: 80px; padding: 0.3em; }
+        .result { margin-top: 2em; font-size: 1.2em; }
+    </style>
+</head>
+<body>
+    
+    <div class="navbar">
+        <button id="nav-s3" class="active">Moyenne S3</button>
+        <button id="nav-s4">Moyenne S4</button>
+    </div>
+    <div class="container" id="content"></div>
+    <script>
+        // Données S3 et S4 (nom, coefficient)
+        const S3 = [
+            ["Devoir Theorique algo,structure de donne  et complexite",4*0.6],
+            ["Devoir Pratique algo,structure de donne  et complexite",4*0.4],
+            ["Devoir Theorique programation orienté objet",3*0.6],
+            ["Devoir Pratique programation orienté objet",3*0.4],
+            ["Devoir utilisation des systeme d'exploitation unix/linux",2],
+            ["Devoir1 concepsation des systeme d'exploitation",2],
+            ["Devoir2 concepsation des systeme d'exploitation",2],
+            ["Devoir Algebre lineaire",2],
+            ["Devoir1 Probabilite",3],
+            ["Devoir Graphe et optimisation",2],
+            ["Devoir Electronique de puissance",1.5],
+            ["Devoir Electrotechnique", 1.5],
+            ["Devoir Droit",2],
+            ["Devoir Anglais",2],
+            ["Devoir Compta analytique",3]
+        ];
+        const S4 = [
+            ["Architecture Client Serveur",2],
+            ["Administration des systemes d'exploitation ",2],
+            ["Statistique inferentielle ",2],
+            ["Securité informatique ",3],
+            ["Base de donnée ",4],
+            ["Architecture et technologies reseaux ",3],
+            ["Modele osi/tcp ip ",3],
+            ["Routage ip ",1],
+            ["Analyse numerique Theorie",3 * 0.6],
+            ["Analyse numerique Pratique",3 * 0.4],
+            ["Connaissance d'entreprise ",2],
+            ["Communication en entreprise theorie",2 * 0.6],
+            ["Communication en entreprise pratique",2 * 0.4],
+            ["Analyse financiere",2],
+            ["Projet tutoré", 1]
+        ];
+
+        // Utilitaires
+        function getStorageKey(tab) { return "notes_" + tab; }
+        function getNotes(tab) {
+            return JSON.parse(localStorage.getItem(getStorageKey(tab)) || "[]");
+        }
+        function setNotes(tab, notes) {
+            localStorage.setItem(getStorageKey(tab), JSON.stringify(notes));
+        }
+
+        // Calcul de la moyenne
+        function calcMoyenne(tab, notes) {
+            const matieres = tab === "s3" ? S3 : S4;
+            let total = 0, coef = 0;
+            for (let i = 0; i < matieres.length; i++) {
+                const note = parseFloat(notes[i] || 0);
+                total += note * matieres[i][1];
+                coef += matieres[i][1];
+            }
+            return coef ? (total / coef).toFixed(2) : "0.00";
+        }
+
+        // Affichage du formulaire
+        function render(tab) {
+            const matieres = tab === "s3" ? S3 : S4;
+            const notes = getNotes(tab) || [];
+            let html = `<h2>Moyenne ${tab.toUpperCase()}</h2><form id="form-${tab}">`;
+            matieres.forEach((m, i) => {
+                html += `
+                <div class="matiere">
+                    <label for="note-${i}">${m[0]} (coef ${m[1]})</label>
+                    <input type="number" min="0" max="20" step="0.01" id="note-${i}" value="${notes[i] !== undefined ? notes[i] : ''}">
+                </div>`;
+            });
+            html += `<div class="result">
+                        <strong>Moyenne: <span id="moyenne">${calcMoyenne(tab, notes)}</span></strong>
+                    </div>`;
+            html += `</form>`;
+            document.getElementById("content").innerHTML = html;
+
+            // Ajout des listeners pour sauvegarder et recalculer
+            matieres.forEach((_, i) => {
+                document.getElementById(`note-${i}`).addEventListener("input", function(e) {
+                    notes[i] = e.target.value;
+                    setNotes(tab, notes);
+                    document.getElementById("moyenne").textContent = calcMoyenne(tab, notes);
+                });
+            });
+        }
+
+        // Navigation
+        let currentTab = "s3";
+        document.getElementById("nav-s3").onclick = function() {
+            currentTab = "s3";
+            this.classList.add("active");
+            document.getElementById("nav-s4").classList.remove("active");
+            render("s3");
+        };
+        document.getElementById("nav-s4").onclick = function() {
+            currentTab = "s4";
+            this.classList.add("active");
+            document.getElementById("nav-s3").classList.remove("active");
+            render("s4");
+        };
+
+        // Initialisation
+        render("s3");
+    </script>
+</body>
 </html>
