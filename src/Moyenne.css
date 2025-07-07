@@ -1,0 +1,77 @@
+*,::before,::after{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+}
+
+form{
+    text-align: center;
+}
+#notes-container{
+    width: 40vw;
+    min-width: 350px;
+    max-width: 1000px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    border: 1px solid rgb(127, 127, 127);
+    margin: 20px;
+    padding: 40px;
+    border-radius: 5px;
+}
+#notes-header{
+    font-size: 30px;
+    font-weight: bolder;
+    color: blue;
+    margin: 10px;
+}
+.notes-section{
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    margin-bottom: 16px;
+}
+.notes-section label {
+    margin-bottom: 4px;
+    font-size: 16px;
+    color: #222;
+}
+.notes-section input {
+    height: 36px;
+    padding: 4px 8px;
+    font-size: 16px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    transition: border-color 0.3s;
+}
+.notes-section input:focus {
+    border-color: #1976d2;
+    outline: none;
+    background: #f0f8ff;
+}
+#moyenne{
+    margin: 10px;
+    border: none;
+    background-color: blue;
+    color: white;
+    width: 100px;
+    padding: 10px;
+    height: 40px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+#moyenne:hover{
+    background-color: #1976d2;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.2);
+}
